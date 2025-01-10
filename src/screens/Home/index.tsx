@@ -1,22 +1,25 @@
 import { Text, View, TextInput, TouchableOpacity, ScrollView, FlatList, Alert } from "react-native"
 import { styles } from "./styles"
 import { Participant } from "../../components/Participant"
-import { useState } from "react"
+import React, { useState } from "react"
 
 export function Home() {
 
     const [participants, setParticipants] = useState<string[]>([])
+    const [newParticipant, setNewParticipant] = useState('')
     
     function handleParticipantAdd() {
-      if(participants.includes('Rodrigo')) {
+      if(participants.includes(newParticipant)) {
         Alert.alert('Participante já adicionado', 'Já existe um participante com esse nome')
         return
       }
-      const newParticipant = 'Rodrigo'
-      setParticipants([...participants, newParticipant])
+      setParticipants(prevState => [...prevState, newParticipant])
+      setNewParticipant('')
     }
 
     function handleParticipantRemove(name: string) {
+
+      
       Alert.alert('Remover participante', `Tem certeza que quer remover ${name}`, [
         {
           text: 'Não',
@@ -24,7 +27,7 @@ export function Home() {
         },
         {
           text: 'Sim',
-          onPress: () => Alert.alert('Removido!')
+          onPress: () => setParticipants(prevState => prevState.filter(participant => participant !== name))
         }
       ])
     }
@@ -34,7 +37,12 @@ export function Home() {
       <Text key='2' style={styles.eventDate}>Terça, 06 de Janeiro de 2025</Text>
 
         <View style={styles.form}>
-            <TextInput style={styles.input} placeholder="Digite aqui seu e-mail" placeholderTextColor='#6b6b6b'/>
+            <TextInput 
+               style={styles.input} 
+               placeholder="Digite aqui seu e-mail" 
+               placeholderTextColor='#6b6b6b' 
+               onChangeText={setNewParticipant} 
+               value={newParticipant}/>
 
             <TouchableOpacity style={styles.button} onPress={handleParticipantAdd}>
                 <Text style={styles.buttonText}>+</Text>
